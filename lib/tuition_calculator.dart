@@ -72,7 +72,7 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
       SnackBar(
         content: Text(message),
         backgroundColor: color,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -81,31 +81,51 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.blue.shade50, Colors.indigo.shade100],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFB3E5FC),
+              Colors.white,
+            ],
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildHeader(),
-                SizedBox(height: 2),
-                _buildInputForm(),
-                if (_showResults) ...[
-                  SizedBox(height: 24),
-                  _buildResultsSection(),
-                  SizedBox(height: 16),
-                  _buildFineWarning(),
-                ],
-                SizedBox(height: 24),
-                _buildDeveloperCredit(),
-              ],
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Center(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildHeader(),
+                          const SizedBox(height: 8),
+                          _buildInputForm(),
+                          if (_showResults) ...[
+                            const SizedBox(height: 24),
+                            _buildResultsSection(),
+                            const SizedBox(height: 16),
+                            _buildFineWarning(),
+                          ],
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -114,27 +134,37 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 24),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.school, size: 28, color: Colors.blue.shade600),
-              SizedBox(width: 12),
-              Flexible(
+              Icon(Icons.school, size: 32, color: Colors.blue.shade700),
+              const SizedBox(width: 12),
+              const Flexible(
                 child: Text(
                   'Tuition Fees Calculator',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                    color: Colors.black87,
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 4),
+          Text(
+            'Northern University Bangladesh',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.blue.shade800,
+            ),
+          ),
         ],
       ),
     );
@@ -142,10 +172,11 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildInputForm() {
     return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white.withOpacity(0.9),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
@@ -154,21 +185,19 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
               Row(
                 children: [
                   Icon(Icons.calculate, color: Colors.blue.shade600),
-                  SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      'Fee Calculation Form',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Fee Calculation Form',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               _buildResponsiveInputs(),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               _buildActionButtons(),
             ],
           ),
@@ -180,41 +209,40 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
   Widget _buildResponsiveInputs() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 600) {
-          // Desktop/Tablet layout - 2 columns
-          return Column(
-            children: [
+        bool isWide = constraints.maxWidth > 550;
+        return Column(
+          children: [
+            if (isWide)
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _buildInputField('Semester Registration Fees (৳)', _semesterFeesController)),
-                  SizedBox(width: 16),
+                  Expanded(child: _buildInputField('Registration Fees (৳)', _semesterFeesController)),
+                  const SizedBox(width: 16),
                   Expanded(child: _buildInputField('Per Credit Fees (৳)', _perCreditFeesController, required: true)),
                 ],
-              ),
-              SizedBox(height: 16),
+              )
+            else ...[
+              _buildInputField('Registration Fees (৳)', _semesterFeesController),
+              const SizedBox(height: 16),
+              _buildInputField('Per Credit Fees (৳)', _perCreditFeesController, required: true),
+            ],
+            const SizedBox(height: 16),
+            if (isWide)
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: _buildInputField('Total Credits', _totalCreditsController, required: true)),
-                  SizedBox(width: 16),
-                  Expanded(child: _buildInputField('Waiver Percentage (%)', _waiverPercentageController, maxValue: 100)),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildInputField('Waiver (%)', _waiverPercentageController, maxValue: 100)),
                 ],
-              ),
-            ],
-          );
-        } else {
-          // Mobile layout - single column
-          return Column(
-            children: [
-              _buildInputField('Semester Registration Fees (৳)', _semesterFeesController),
-              SizedBox(height: 16),
-              _buildInputField('Per Credit Fees (৳)', _perCreditFeesController, required: true),
-              SizedBox(height: 16),
+              )
+            else ...[
               _buildInputField('Total Credits', _totalCreditsController, required: true),
-              SizedBox(height: 16),
-              _buildInputField('Waiver Percentage (%)', _waiverPercentageController, maxValue: 100),
+              const SizedBox(height: 16),
+              _buildInputField('Waiver (%)', _waiverPercentageController, maxValue: 100),
             ],
-          );
-        }
+          ],
+        );
       },
     );
   }
@@ -226,17 +254,20 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        labelStyle: const TextStyle(fontSize: 14),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.5),
       ),
       validator: (value) {
         if (required && (value == null || value.isEmpty)) {
-          return 'This field is required';
+          return 'Required';
         }
         if (maxValue != null && value != null && value.isNotEmpty) {
           final numValue = double.tryParse(value);
           if (numValue != null && numValue > maxValue) {
-            return 'Value cannot exceed $maxValue';
+            return 'Max $maxValue%';
           }
         }
         return null;
@@ -247,64 +278,43 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
   Widget _buildActionButtons() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 400) {
+        bool isWide = constraints.maxWidth > 400;
+        Widget calculateBtn = ElevatedButton.icon(
+          onPressed: _calculateFees,
+          icon: const Icon(Icons.calculate),
+          label: const Text('Calculate Fees'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue.shade600,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+
+        Widget resetBtn = OutlinedButton(
+          onPressed: _resetCalculator,
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text('Reset'),
+        );
+
+        if (isWide) {
           return Row(
             children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: _calculateFees,
-                  icon: Icon(Icons.calculate),
-                  label: Text('Calculate Fees'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade600,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _resetCalculator,
-                  child: Text('Reset'),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-              ),
+              Expanded(child: calculateBtn),
+              const SizedBox(width: 16),
+              Expanded(child: resetBtn),
             ],
           );
         } else {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _calculateFees,
-                  icon: Icon(Icons.calculate),
-                  label: Text('Calculate Fees'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade600,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-              ),
-              SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: _resetCalculator,
-                  child: Text('Reset'),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-              ),
+              calculateBtn,
+              const SizedBox(height: 12),
+              resetBtn,
             ],
           );
         }
@@ -320,7 +330,7 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(child: _buildCostBreakdown()),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(child: _buildPaymentInstallments()),
             ],
           );
@@ -328,7 +338,7 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
           return Column(
             children: [
               _buildCostBreakdown(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildPaymentInstallments(),
             ],
           );
@@ -339,28 +349,28 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildCostBreakdown() {
     return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white.withOpacity(0.9),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Cost Breakdown',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.green.shade700,
+                color: Colors.green,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildCostRow('Credit Cost:', '৳${_creditCost!.toStringAsFixed(0)}'),
             _buildCostRow('Waiver Amount:', '-৳${_waiverAmount!.toStringAsFixed(0)}', color: Colors.green.shade600),
-            _buildCostRow('Registration Fees:', '৳${double.tryParse(_semesterFeesController.text)?.toStringAsFixed(0) ?? '0'}'),
-            Divider(thickness: 2),
-            _buildCostRow('Total Cost:', '৳${_totalCost!.toStringAsFixed(0)}',
-                isTotal: true, color: Colors.blue.shade600),
+            _buildCostRow('Registration:', '৳${double.tryParse(_semesterFeesController.text)?.toStringAsFixed(0) ?? '0'}'),
+            const Divider(height: 24, thickness: 1),
+            _buildCostRow('Total Cost:', '৳${_totalCost!.toStringAsFixed(0)}', isTotal: true, color: Colors.blue.shade700),
           ],
         ),
       ),
@@ -369,27 +379,28 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildPaymentInstallments() {
     return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white.withOpacity(0.9),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Payment Installments',
+            const Text(
+              'Installments',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple.shade700,
+                color: Colors.purple,
               ),
             ),
-            SizedBox(height: 16),
-            _buildInstallmentCard('1st Installment (40%)', _firstInstallment!, Colors.blue),
-            SizedBox(height: 12),
-            _buildInstallmentCard('2nd Installment (30%)', _secondInstallment!, Colors.orange),
-            SizedBox(height: 12),
-            _buildInstallmentCard('3rd Installment (30%)', _thirdInstallment!, Colors.green),
+            const SizedBox(height: 16),
+            _buildInstallmentCard('1st (40%)', _firstInstallment!, Colors.blue),
+            const SizedBox(height: 12),
+            _buildInstallmentCard('2nd (30%)', _secondInstallment!, Colors.orange),
+            const SizedBox(height: 12),
+            _buildInstallmentCard('3rd (30%)', _thirdInstallment!, Colors.green),
           ],
         ),
       ),
@@ -398,7 +409,7 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildCostRow(String label, String value, {Color? color, bool isTotal = false}) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -408,17 +419,17 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
               style: TextStyle(
                 fontSize: isTotal ? 16 : 14,
                 fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                color: Colors.grey.shade600,
+                color: Colors.black54,
               ),
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             value,
             style: TextStyle(
               fontSize: isTotal ? 18 : 16,
               fontWeight: FontWeight.bold,
-              color: color ?? Colors.grey.shade800,
+              color: color ?? Colors.black87,
             ),
           ),
         ],
@@ -428,11 +439,11 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildInstallmentCard(String title, double amount, MaterialColor cardColor) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: cardColor.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: cardColor.shade200),
+        color: cardColor.shade50.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: cardColor.shade100),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -447,13 +458,12 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
               ),
             ),
           ),
-          SizedBox(width: 8),
           Text(
             '৳${amount.toStringAsFixed(0)}',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: cardColor.shade700,
+              color: cardColor.shade900,
             ),
           ),
         ],
@@ -463,123 +473,47 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
 
   Widget _buildFineWarning() {
     return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: Colors.red.shade50,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.red.shade50.withOpacity(0.95),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Row(
               children: [
-                Icon(Icons.warning, color: Colors.red.shade600, size: 24),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Late Payment Fine',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red.shade800,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'If payment is not completed within the semester, a fine of ৳1,000 will be added.',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red.shade700,
-                        ),
-                      ),
-                    ],
+                Icon(Icons.warning_amber_rounded, color: Colors.red.shade600, size: 28),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Late payment adds a ৳1,000 fine if not cleared within the semester.',
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.shade100,
-                borderRadius: BorderRadius.circular(8),
+                color: Colors.red.shade100.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: Text(
-                      'Total with Fine:',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red.shade800,
-                      ),
-                    ),
+                  const Text(
+                    'Total with Fine:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
                   ),
-                  SizedBox(width: 8),
                   Text(
                     '৳${_totalWithFine!.toStringAsFixed(0)}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red.shade800,
-                    ),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
                   ),
                 ],
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDeveloperCredit() {
-    return Container(
-      width: double.infinity,
-      child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.indigo.shade500, Colors.purple.shade600],
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: EdgeInsets.all(12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(width: 12),
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Developed by',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white70,
-                      ),
-                    ),
-                    Text(
-                      'Riazul Hasan Rocky',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
