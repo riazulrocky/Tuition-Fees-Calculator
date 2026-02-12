@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class TuitionCalculator extends StatefulWidget {
+  const TuitionCalculator({super.key});
+
   @override
   _TuitionCalculatorState createState() => _TuitionCalculatorState();
 }
@@ -118,27 +120,21 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.school, size: 32, color: Colors.blue.shade600),
+              Icon(Icons.school, size: 28, color: Colors.blue.shade600),
               SizedBox(width: 12),
-              Text(
-                'Tuition Fees Calculator',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade800,
+              Flexible(
+                child: Text(
+                  'Tuition Fees Calculator',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
                 ),
               ),
             ],
           ),
           SizedBox(height: 8),
-          Text(
-            'Calculate your semester fees and payment installments',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-            ),
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );
@@ -159,11 +155,13 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
                 children: [
                   Icon(Icons.calculate, color: Colors.blue.shade600),
                   SizedBox(width: 8),
-                  Text(
-                    'Fee Calculation Form',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  Flexible(
+                    child: Text(
+                      'Fee Calculation Form',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -404,14 +402,17 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: isTotal ? 16 : 14,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              color: Colors.grey.shade600,
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: isTotal ? 16 : 14,
+                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                color: Colors.grey.shade600,
+              ),
             ),
           ),
+          SizedBox(width: 8),
           Text(
             value,
             style: TextStyle(
@@ -446,6 +447,7 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
               ),
             ),
           ),
+          SizedBox(width: 8),
           Text(
             '৳${amount.toStringAsFixed(0)}',
             style: TextStyle(
@@ -507,14 +509,17 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Total with Fine:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red.shade800,
+                  Flexible(
+                    child: Text(
+                      'Total with Fine:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red.shade800,
+                      ),
                     ),
                   ),
+                  SizedBox(width: 8),
                   Text(
                     '৳${_totalWithFine!.toStringAsFixed(0)}',
                     style: TextStyle(
@@ -550,24 +555,28 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(width: 12),
-              Column(
-                children: [
-                  Text(
-                    'Developed by',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white70,
+              Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Developed by',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Riazul Hasan Rocky',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    Text(
+                      'Riazul Hasan Rocky',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
