@@ -88,8 +88,8 @@ class _TuitionCalculatorState extends State<TuitionCalculator> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFB3E5FC),
-              Colors.white,
+              Color(0xFF87CEEB), // Sky Blue
+              Color(0xFF87CEFA), // Light Sky Blue
             ],
           ),
         ),
